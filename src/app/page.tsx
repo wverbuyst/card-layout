@@ -1,3 +1,5 @@
+import CardGrid from "@/components/card-grid";
+
 export default function Home() {
-  return <main className="h-screen p-24">hello world</main>;
+  return <CardGrid />;
 }
