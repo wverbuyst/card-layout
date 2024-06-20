@@ -1,5 +1,5 @@
-import CardGrid from "@/components/card-grid";
+import CardLayout from "@/components/card-layout";
 
 export default function Home() {
-  return <CardGrid />;
+  return <CardLayout />;
 }
