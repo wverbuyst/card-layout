@@ -20,37 +20,6 @@ interface CardItem {
 }
 
 function CardComponent({
-  cardItem: { name, color, collapsed },
-  handleCollapse,
-  children,
-}: {
-  cardItem: CardItem;
-  handleCollapse: () => void;
-  children?: React.ReactNode;
-}) {
-  return (
-    <Card className={cn(color, "text-white")}>
-      <CardHeader>
-        <CardTitle className="text-3xl flex justify-between items-center">
-          <span>{name}</span>
-          <span className="flex gap-2">
-            {children}
-            {collapsed ? (
-              <MaximizeIcon onClick={handleCollapse} size={20} />
-            ) : (
-              <MinimizeIcon onClick={handleCollapse} size={20} />
-            )}
-          </span>
-        </CardTitle>
-      </CardHeader>
-      {!collapsed && (
-        <CardContent className="flex items-center justify-center h-[80px]" />
-      )}
-    </Card>
-  );
-}
-
-function Column({
   handleCollapse,
   index,
   cardItem,
@@ -68,63 +37,54 @@ function Column({
   }) => void;
   column: 1 | 2 | 3;
 }) {
+  function collapse() {
+    handleCollapse({ column, index });
+  }
+
+  function move(direction: "up" | "down" | "left" | "right") {
+    handleMove({ direction, col: column, index, cardItem });
+  }
+
   return (
-    <CardComponent
-      key={cardItem.name}
-      cardItem={cardItem}
-      handleCollapse={() => handleCollapse({ column, index })}
-    >
-      <section className="text-white flex gap-2">
-        <MoveLeftIcon
-          className="cursor-pointer"
-          size={20}
-          onClick={() =>
-            handleMove({
-              direction: "left",
-              col: column,
-              index,
-              cardItem,
-            })
-          }
-        />
-        <MoveDownIcon
-          className="cursor-pointer"
-          size={20}
-          onClick={() =>
-            handleMove({
-              direction: "down",
-              col: column,
-              index,
-              cardItem,
-            })
-          }
-        />
-        <MoveUpIcon
-          className="cursor-pointer"
-          size={20}
-          onClick={() =>
-            handleMove({
-              direction: "up",
-              col: column,
-              index,
-              cardItem,
-            })
-          }
-        />
-        <MoveRightIcon
-          className="cursor-pointer"
-          size={20}
-          onClick={() =>
-            handleMove({
-              direction: "right",
-              col: column,
-              index,
-              cardItem,
-            })
-          }
-        />
-      </section>
-    </CardComponent>
+    <Card className={cn(cardItem.color, "text-white")}>
+      <CardHeader>
+        <CardTitle className="text-3xl flex justify-between items-center">
+          <section className="flex items-center gap-2">
+            <span>{cardItem.name}</span>
+            <span className="flex gap-2">
+              <MoveLeftIcon
+                className="cursor-pointer"
+                size={20}
+                onClick={() => move("left")}
+              />
+              <MoveDownIcon
+                className="cursor-pointer"
+                size={20}
+                onClick={() => move("down")}
+              />
+              <MoveUpIcon
+                className="cursor-pointer"
+                size={20}
+                onClick={() => move("up")}
+              />
+              <MoveRightIcon
+                className="cursor-pointer"
+                size={20}
+                onClick={() => move("right")}
+              />
+              {cardItem.collapsed ? (
+                <MaximizeIcon onClick={collapse} size={20} />
+              ) : (
+                <MinimizeIcon onClick={collapse} size={20} />
+              )}
+            </span>
+          </section>
+        </CardTitle>
+      </CardHeader>
+      {!cardItem.collapsed && (
+        <CardContent className="flex items-center justify-center h-[80px]" />
+      )}
+    </Card>
   );
 }
 
@@ -204,7 +164,7 @@ export default function CardLayout() {
         return (
           <section className="flex flex-col w-[350px] gap-4" key={column}>
             {cardItems.map((cardItem, index) => (
-              <Column
+              <CardComponent
                 key={cardItem.name}
                 cardItem={cardItem}
                 index={index}
