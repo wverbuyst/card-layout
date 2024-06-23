@@ -36,42 +36,31 @@ function CardComponent({
   return (
     <Card className={cn(cardItem.color, "text-white")}>
       <CardHeader>
-        <CardTitle className="text-3xl flex justify-between items-center">
-          <section className="flex items-center gap-2">
-            <span>{cardItem.name}</span>
-            <span className="flex gap-2">
-              <MoveLeftIcon
-                className="cursor-pointer"
-                size={20}
-                onClick={() => move("left")}
-              />
-              <MoveDownIcon
-                className="cursor-pointer"
-                size={20}
-                onClick={() => move("down")}
-              />
-              <MoveUpIcon
-                className="cursor-pointer"
-                size={20}
-                onClick={() => move("up")}
-              />
-              <MoveRightIcon
-                className="cursor-pointer"
-                size={20}
-                onClick={() => move("right")}
-              />
-              {cardItem.collapsed ? (
-                <MaximizeIcon onClick={collapse} size={20} />
-              ) : (
-                <MinimizeIcon onClick={collapse} size={20} />
-              )}
-            </span>
-          </section>
+        <CardTitle className="text-3xl flex items-center justify-between">
+          <span>{cardItem.name}</span>
+          <span className="flex gap-2">
+            <MoveLeftIcon
+              className="cursor-pointer hidden lg:block"
+              onClick={() => move("left")}
+            />
+            <MoveDownIcon
+              className="cursor-pointer"
+              onClick={() => move("down")}
+            />
+            <MoveUpIcon className="cursor-pointer" onClick={() => move("up")} />
+            <MoveRightIcon
+              className="cursor-pointer hidden lg:block"
+              onClick={() => move("right")}
+            />
+            {cardItem.collapsed ? (
+              <MaximizeIcon onClick={collapse} />
+            ) : (
+              <MinimizeIcon onClick={collapse} />
+            )}
+          </span>
         </CardTitle>
       </CardHeader>
-      {!cardItem.collapsed && (
-        <CardContent className="flex items-center justify-center h-[80px]" />
-      )}
+      {!cardItem.collapsed && <CardContent className="h-[80px]" />}
     </Card>
   );
 }
@@ -82,10 +71,10 @@ export default function CardLayout() {
   const { layout } = useCardStore();
 
   return (
-    <main className="p-24 flex justify-center gap-4">
+    <main className="flex flex-col justify-center lg:flex-row items-stretch gap-2 p-4 lg:p-12 xl:p-24">
       {Object.entries(layout).map(([column, cardItems]) => {
         return (
-          <section className="flex flex-col w-[350px] gap-4" key={column}>
+          <section className="flex flex-col gap-2 lg:w-1/3" key={column}>
             {cardItems.map((cardItem, index) => (
               <MemoizedCardComponent
                 key={cardItem.name}
